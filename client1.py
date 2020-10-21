@@ -1,9 +1,12 @@
 import json
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
+from RPLCD import CharLCD
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
+
+lcd = CharLCD(numbering_mode=GPIO.BOARD, cols=16, rows=2, pin_rs=10, pin_e=12, pins_data=[16, 15, 13, 11])
 
 # The callback for when the client receives a CONNACK response from the server.
 
@@ -14,7 +17,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("iot/light")
+    client.subscribe("iot/led")
     client.subscribe("test")
 
 # The callback for when a PUBLISH message is received from the server.
@@ -30,14 +33,19 @@ def on_message(client, userdata, msg):
         print("json error")
 
     status = json_message['status']
+    message = json_message['message']
     
     print(status)
+    print(message)
+
     GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW)
     
     if status:   
         GPIO.output(8, GPIO.HIGH)
+        lcd.write_string(str(message))
     else:
         GPIO.output(8, GPIO.LOW)
+        lcd.clear()
 
 
 client = mqtt.Client()

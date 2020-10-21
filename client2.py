@@ -12,7 +12,7 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("test")
-    client.subscribe("iot/light")
+    client.subscribe("iot/led")
 
 
 client.on_connect = on_connect
@@ -24,7 +24,7 @@ send = True
 while send:
     message = input("press enter to light the led ")
     if message is not None:
-        client.publish("iot/light", payload=json.dumps({"status": True}))
+        client.publish("iot/led", payload=json.dumps({"status": True}))
     send_input = input("send another input? Y/n -> ")
     if send_input != 'Y' and send_input != 'y':
         send = False
