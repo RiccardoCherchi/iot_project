@@ -42,7 +42,7 @@ def on_message(client, userdata, msg):
     
     if status:   
         GPIO.output(8, GPIO.HIGH)
-        lcd.write_string(str(message))
+        lcd.write_string(u"%s" % (message))
     else:
         GPIO.output(8, GPIO.LOW)
         lcd.clear()
